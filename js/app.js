@@ -26,9 +26,9 @@ export default class Sketch {
       1000
     );
 
-    // let frustumSize = 10;
-    // let aspect = window.innerWidth / window.innerHeight;
-    // this.camera = new THREE.OrthographicCamera( frustumSize * aspect / - 2, frustumSize * aspect / 2, frustumSize / 2, frustumSize / - 2, -1000, 1000 );
+    let frustumSize = 1;
+    let aspect = window.innerWidth / window.innerHeight;
+    this.camera = new THREE.OrthographicCamera( frustumSize / - 2, frustumSize  / 2, frustumSize / 2, frustumSize / - 2, -1000, 1000 );
     this.camera.position.set(0, 0, 2);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.time = 0;
@@ -38,7 +38,7 @@ export default class Sketch {
     this.addObjects();
     this.resize();
     this.render();
-    this.setupResize();
+    this.setupResize(); 
     // this.settings(); // enable for gui
   }
 
@@ -60,7 +60,25 @@ export default class Sketch {
     this.height = this.container.offsetHeight;
     this.renderer.setSize(this.width, this.height);
     this.camera.aspect = this.width / this.height;
-    this.camera.updateProjectionMatrix();
+  
+  
+
+  // image cover
+  this.imageAspect = 1;
+  let a1; let a2;
+  if (this.height / this.width > this.imageAspect) {
+    a1 = (this.width / this.height) * this.imageAspect;
+    a2 = 1;
+  } else {
+    a1 = 1;
+    a2 = (this.height / this.width) * this.imageAspect;
+  }
+  this.material.uniforms.resolution.value.x = this.width;
+  this.material.uniforms.resolution.value.y = this.height;
+  this.material.uniforms.resolution.value.x = a1;
+  this.material.uniforms.resolution.value.y = a2;
+
+  this.camera.updateProjectionMatrix();
   }
 
   // add objects to scene here
