@@ -28,7 +28,8 @@ export default class Sketch {
 
     let frustumSize = 1;
     let aspect = window.innerWidth / window.innerHeight;
-    this.camera = new THREE.OrthographicCamera( frustumSize / - 2, frustumSize  / 2, frustumSize / 2, frustumSize / - 2, -1000, 1000 );
+    this.camera = new THREE.OrthographicCamera( frustumSize / - 2, frustumSize  / 2, frustumSize / 
+    2, frustumSize / - 2, -1000, 1000 );
     this.camera.position.set(0, 0, 2);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.time = 0;
@@ -75,8 +76,8 @@ export default class Sketch {
   }
   this.material.uniforms.resolution.value.x = this.width;
   this.material.uniforms.resolution.value.y = this.height;
-  this.material.uniforms.resolution.value.x = a1;
-  this.material.uniforms.resolution.value.y = a2;
+  this.material.uniforms.resolution.value.z = a1;
+  this.material.uniforms.resolution.value.w = a2;
 
   this.camera.updateProjectionMatrix();
   }
