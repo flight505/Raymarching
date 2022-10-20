@@ -2,6 +2,12 @@ import * as THREE from "three";
 import fragment from "./shader/fragment.glsl";
 import vertex from "./shader/vertex.glsl";
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import gsap from "gsap";
+import GUI from "lil-gui";
+import matcap from "../434343_9E9E9E_8C8C8C_848484-256px.png";
+import matcap1 from "../242733_333A4D_3E4554_3C3B43-256px.png";
+
+
 
 export default class Sketch {
   constructor(options) {
@@ -40,7 +46,16 @@ export default class Sketch {
     this.resize();
     this.render();
     this.setupResize(); 
-    // this.settings(); // enable for gui
+    this.mouseEvents();
+    this.settings(); // enable for gui
+  }
+
+  mouseEvents() {
+    this.mouse = new THREE.Vector2();
+    document.addEventListener("mousemove", (e) => {
+      this.mouse.x = e.pageX/this.width - 0.5;
+      this.mouse.y = -e.pageY/this.height + 0.5;
+    })
   }
 
   settings() {
@@ -48,7 +63,7 @@ export default class Sketch {
     this.settings = {
       progress: 0,
     };
-    this.gui = new dat.GUI();
+    this.gui = new GUI();
     this.gui.add(this.settings, "progress", 0, 1, 0.01);
   }
 
@@ -92,6 +107,10 @@ export default class Sketch {
       side: THREE.DoubleSide,
       uniforms: {
         time: { type: "f", value: 0 },
+        progress: { type: "f", value: 0 },
+        mouse: { type: "v2", value: new THREE.Vector2(0.0) },
+        matcap: { type: "t", value: new THREE.TextureLoader().load(matcap) },
+        matcap1: { type: "t", value: new THREE.TextureLoader().load(matcap1) },
         resolution: { type: "v4", value: new THREE.Vector4() },
         uvRate1: {
           value: new THREE.Vector2(1, 1)
@@ -122,8 +141,13 @@ export default class Sketch {
 
   render() {
     if (!this.isPlaying) return;
-    this.time += 0.05;
-    this.material.uniforms.time.value = this.time; // update time uniform in shader material for animation effect on object in scene ( for example test plane)   
+    this.time += 0.07;
+    this.material.uniforms.time.value = this.time; // update time uniform in shader material for animation effect on object in scene ( for example test plane)  
+    this.material.uniforms.progress.value = this.settings.progress;
+    if(this.mouse){
+      this.material.uniforms.mouse.value = this.mouse
+    } 
+    // console.log(this.mouse);
     requestAnimationFrame(this.render.bind(this));
     this.renderer.render(this.scene, this.camera);
   }
